@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- wixstdba 中文文案：ID 与 WiX 自带 en-us.wxl 一一对应，缺一条 UI 就回退英文 -->
+<WixLocalization Culture="zh-cn" Language="2052" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+  <String Id="Caption">[WixBundleName] 安装程序</String>
+  <String Id="Title">[WixBundleName]</String>
+  <String Id="InstallVersion">版本 [WixBundleVersion]</String>
+  <String Id="ConfirmCancelMessage">确定要取消吗？</String>
+  <String Id="ExecuteUpgradeRelatedBundleMessage">旧版本</String>
+  <String Id="HelpHeader">安装帮助</String>
+  <String Id="HelpText">/install | /repair | /uninstall | /layout [目录] - 安装、修复、卸载，或在指定目录创建完整本地副本。默认为安装。
+
+/passive | /quiet - 显示精简界面，或不显示任何界面和提示。
+
+/norestart - 不尝试重启计算机。
+
+/log log.txt - 记录到指定文件。默认在 %TEMP% 生成日志。</String>
+  <String Id="HelpCloseButton">关闭(&amp;C)</String>
+  <String Id="InstallAcceptCheckbox">我同意许可条款和条件(&amp;A)</String>
+  <String Id="InstallOptionsButton">选项(&amp;O)</String>
+  <String Id="InstallInstallButton">安装(&amp;I)</String>
+  <String Id="InstallCloseButton">关闭(&amp;C)</String>
+  <String Id="OptionsHeader">安装选项</String>
+  <String Id="OptionsLocationLabel">安装位置：</String>
+  <String Id="OptionsBrowseButton">浏览(&amp;B)</String>
+  <String Id="OptionsOkButton">确定(&amp;O)</String>
+  <String Id="OptionsCancelButton">取消(&amp;C)</String>
+  <String Id="ProgressHeader">正在安装</String>
+  <String Id="ProgressLabel">正在处理：</String>
+  <String Id="OverallProgressPackageText">正在初始化……</String>
+  <String Id="ProgressCancelButton">取消(&amp;C)</String>
+  <String Id="ModifyHeader">修改安装</String>
+  <String Id="ModifyRepairButton">修复(&amp;R)</String>
+  <String Id="ModifyUninstallButton">卸载(&amp;U)</String>
+  <String Id="ModifyCloseButton">关闭(&amp;C)</String>
+  <String Id="SuccessRepairHeader">修复完成</String>
+  <String Id="SuccessUninstallHeader">卸载完成</String>
+  <String Id="SuccessInstallHeader">安装完成</String>
+  <String Id="SuccessHeader">安装成功</String>
+  <String Id="SuccessLaunchButton">启动(&amp;L)</String>
+  <String Id="SuccessRestartText">需要重启计算机才能使用本软件。</String>
+  <String Id="SuccessRestartButton">重启(&amp;R)</String>
+  <String Id="SuccessCloseButton">关闭(&amp;C)</String>
+  <String Id="FailureHeader">安装失败</String>
+  <String Id="FailureInstallHeader">安装失败</String>
+  <String Id="FailureUninstallHeader">卸载失败</String>
+  <String Id="FailureRepairHeader">修复失败</String>
+  <String Id="FailureHyperlinkLogText">安装遇到问题，已停止。详情请查看&lt;a href="#"&gt;日志文件&lt;/a&gt;。</String>
+  <String Id="FailureRestartText">需要重启计算机才能完成回滚。</String>
+  <String Id="FailureRestartButton">重启(&amp;R)</String>
+  <String Id="FailureCloseButton">关闭(&amp;C)</String>
+  <String Id="FilesInUseHeader">文件被占用</String>
+  <String Id="FilesInUseLabel">以下程序正在使用需要更新的文件：</String>
+  <String Id="FilesInUseCloseRadioButton">关闭程序并尝试重新启动(&amp;A)</String>
+  <String Id="FilesInUseDontCloseRadioButton">不关闭程序（之后需要重启）(&amp;D)</String>
+  <String Id="FilesInUseOkButton">确定(&amp;O)</String>
+  <String Id="FilesInUseCancelButton">取消(&amp;C)</String>
+  <String Id="ErrorFailNoActionReboot">系统需要重启，未执行任何操作。</String>
+</WixLocalization>

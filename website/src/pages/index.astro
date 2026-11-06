@@ -1,0 +1,472 @@
+---
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+const version = "1.4.1";
+const releaseBase = `https://github.com/seedtut/seedbili/releases/download/v${version}`;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>seedbili — B 站评论区自动回复 Agent</title>
+    <meta
+      name="description"
+      content="seedbili 抓自己投稿视频下的新评论，本地规则过滤、大模型起草、护栏复检后才回复，全程落台账。不碰密码、不代登录、不绕风控，Windows 免费开源。"
+    />
+    <link rel="icon" type="image/png" href="/seedbili-icon.png" />
+    <meta property="og:title" content="seedbili — B 站评论区自动回复 Agent" />
+    <meta property="og:description" content="评论区不用一条条回了。免费开源，人只做配置和兜底。" />
+    <meta property="og:image" content="/seedbili-icon.png" />
+  </head>
+  <body>
+    <SiteHeader />
+
+    <!-- ======================= 首屏 ======================= -->
+    <section class="hero" id="top">
+      <div class="wrap">
+        <p class="hero-label">丐帮工作室 · 免费开源 · v{version} · Windows 10·11</p>
+        <h1>评论区，<br />不用一条条回了。</h1>
+        <p class="hero-sub">
+          seedbili 只抓<strong>你自己投稿</strong>下面的新评论：本地规则先滤一遍，大模型起草回复，
+          护栏复检过了才发出去，每一条都记台账。拿不准的进收件箱等你点头——
+          人只做配置和兜底，工具不碰密码、不代登录。
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#download">下载 v{version}（Windows）</a>
+          <a class="btn btn-ghost" href="#shots">先看看界面</a>
+        </div>
+        <p class="hero-spec">
+          v{version} · 64 位 · 安装包 85–89 MB · per-user 免管理员 · MIT · 源码在
+          <a href="https://github.com/seedtut/seedbili" target="_blank" rel="noopener">GitHub</a>
+        </p>
+      </div>
+      <div class="wrap hero-shot-wrap">
+        <figure class="hero-shot">
+          <img src="/shots/overview.png" alt="seedbili 概览页：开始状态、今日记录、模型设置一目了然" loading="eager" />
+          <figcaption>概览页：三步好没好、今天做了什么，一屏看完。</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ======================= 它替你做什么 ======================= -->
+    <section class="works" id="works">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>脏活它干，主意你拿</h2>
+        </div>
+        <dl class="work-list">
+          {
+            [
+              [
+                "收件箱人工兜底",
+                "模型没把握、被规则拦下、试跑里「本该发」的评论都收进收件箱，重启也不丢。你在输入框里改几个字，点「按这段发送」，就以你的登录态回出去；不想回，点「这条不回」。",
+              ],
+              [
+                "试跑模式",
+                "整条链路真跑一遍，但一条都不发。先看它打算怎么回、为什么这么回，再决定放不放行。",
+              ],
+              [
+                "任意 OpenAI 兼容模型",
+                "chat/completions + function calling，中转站、本地 Ollama 都能接。多套配置并存，Key 各自用 DPAPI 加密，配置文件里看不到明文。",
+              ],
+              [
+                "台账即真相",
+                "每条回复的结论和原因写进 ledger.jsonl：追加写、强制同步，崩溃重启也认得。同一条评论绝不回两次——靠台账，不靠模型的记性。可导出带 BOM 的 CSV，Excel 直接开。",
+              ],
+              [
+                "可选 WSL 沙箱",
+                "Agent 执行命令的环境二选一：本机 cmd（零安装）或 WSL Debian（文件系统隔离），引导页一键安装，随时互换。",
+              ],
+              [
+                "平台插件化",
+                "实现 PlatformAdapter 的抓取 / 回复 / 登录 / 能力声明四个接口，打成 jar 丢进 plugins/ 就能接新平台，业务代码零改动。",
+              ],
+            ].map(([t, d]) => (
+              <div class="work-row">
+                <dt>{t}</dt>
+                <dd>{d}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <!-- ======================= 一条评论进站之后 ======================= -->
+    <section class="flow-sec" id="flow">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>五步，全部发生你自己的电脑上</h2>
+          <p class="sec-sub">全程串行、不并发，没有任何数据被偷偷上传。</p>
+        </div>
+        <ol class="flow">
+          {
+            [
+              [
+                "抓取",
+                "只抓你自己投稿下面的新评论，走 B 站 WBI 签名接口。接口层全部集中在 platform/bilibili/，官方改版只动一个目录。",
+              ],
+              [
+                "本地过滤",
+                "自己、主 UP、黑名单、关键词、长度窗口先筛掉。规则拦下的根本不花钱调模型。",
+              ],
+              [
+                "模型起草",
+                "不可信评论组装进提示词前先去零宽字符、中和角色标记与模板定界符，最后关进 <untrusted_comment_data> 标签——注入探针出不来。",
+              ],
+              [
+                "发前护栏",
+                "模型输出再过一遍：长度、内部标记复述、禁用词、链接域名白名单。有一条不过就发不出去。",
+              ],
+              [
+                "发出并记账",
+                "20–45 秒随机间隔，单轮 10 条、单日 20 条；撞 12014 限流进冷却，撞 12051 重复码记为已处理不重试。",
+              ],
+            ].map(([t, d], i) => (
+              <li class="flow-item">
+                <span class="flow-no">{String(i + 1).padStart(2, "0")}</span>
+                <h3>{t}</h3>
+                <p>{d}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ======================= 界面 ======================= -->
+    <section class="shots-sec" id="shots">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>Material 3，跟着系统变色</h2>
+          <p class="sec-sub">Compose Desktop + Material You 动态取色，浅色 / 深色 / 跟随系统。</p>
+        </div>
+        <div class="shots-row">
+          {
+            [
+              ["/shots/overview.png", "概览", "三步好没好、今日记录、模型设置，一屏看完"],
+              ["/shots/run.png", "运行", "贴一个投稿链接，先试跑，再开始"],
+              ["/shots/inbox.png", "收件箱", "需要人拿主意的都收在这里，改几个字直接发"],
+            ].map(([src, t, d]) => (
+              <figure class="shot">
+                <div class="shot-frame">
+                  <span class="shot-bar"><i>seedbili {version}</i></span>
+                  <img src={src} alt={`seedbili ${t}页截图`} loading="lazy" />
+                </div>
+                <figcaption>
+                  <b>{t}</b>
+                  <span>{d}</span>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 安全红线 ======================= -->
+    <section class="redline" id="security">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>写进代码里，不给开关</h2>
+          <p class="sec-sub">下面这些不是「设置里可以勾的选项」，而是工具的本体。</p>
+        </div>
+        <div class="red-grid">
+          {
+            [
+              [
+                "不碰密码",
+                "没有密码输入框，没有代填、没有代登录。登录能力只有三个：打开登录页、查登录状态、提示重新登录。",
+              ],
+              [
+                "密钥加密落盘",
+                "API Key 和 Cookie 用 Windows DPAPI（当前用户绑定）加密后才写盘，配置里只留句柄；日志写入前先脱敏。",
+              ],
+              [
+                "防注入不可关闭",
+                "唯一一条硬编码规则。策略配置里没有「关掉注入防护」这个勾，代码里也不给这个开关。",
+              ],
+              [
+                "保守节奏",
+                "不做任何绕过风控的能力。撞限流就冷却，撞重复码不重试，连续失败到上限自动停这一轮。",
+              ],
+            ].map(([t, d]) => (
+              <article class="red-card">
+                <h3>{t}</h3>
+                <p>{d}</p>
+              </article>
+            ))
+          }
+        </div>
+        <p class="red-note">
+          数据全部在本机 <code>%APPDATA%\ReplyAgent\</code>：配置、密文、台账、日志。
+          卸载程序不删这个目录——想彻底抹掉就自己去删。宁可让你确认，也不替你丢数据。
+        </p>
+      </div>
+    </section>
+
+    <!-- ======================= 下载 ======================= -->
+    <section class="dl-sec" id="download">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>seedbili v{version}</h2>
+        </div>
+        <div class="dl-grid">
+          <table class="spec">
+            <tbody>
+              <tr><th>版本</th><td>{version} <span class="spec-dim">· 2026-11-01</span></td></tr>
+              <tr><th>系统</th><td>Windows 10 / 11，64 位</td></tr>
+              <tr><th>安装</th><td>per-user，不需要管理员权限</td></tr>
+              <tr><th>体积</th><td>EXE 引导包约 89 MB · MSI 约 85 MB</td></tr>
+              <tr><th>许可</th><td>MIT，免费</td></tr>
+              <tr><th>源码</th><td><a href="https://github.com/seedtut/seedbili" target="_blank" rel="noopener">github.com/seedtut/seedbili</a></td></tr>
+            </tbody>
+          </table>
+          <div class="dl-side">
+            <a class="btn btn-primary dl-btn" href={`${releaseBase}/seedbili-${version}.exe`}>
+              下载安装器（.exe）
+              <small>带中文安装向导，推荐</small>
+            </a>
+            <a class="btn btn-ghost dl-btn" href={`${releaseBase}/seedbili-${version}.msi`}>
+              下载 MSI
+              <small>静默部署用：msiexec /i … /qn</small>
+            </a>
+            <ul class="dl-notes">
+              <li>第一次打开有四步引导，走完就能跑第一轮；没有 B 站账号也能用演示平台把链路跑通。</li>
+              <li>升级直接装新包，旧版本自动卸载，数据不受影响。</li>
+              <li>只想要绿色目录？装完把 <code>%LOCALAPPDATA%\seedbili\</code> 打包带走即可。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 赞助 ======================= -->
+    <section class="sponsor" id="sponsor">
+      <div class="wrap sponsor-inner">
+        <div>
+          <h2>做工具不挣钱，靠爱发电</h2>
+          <p>
+            seedbili 免费开源，也不会加广告或者订阅。如果你用它省下了时间，
+            请我去杯奶茶，或者到粉丝墙上看看一起撑着它的人。
+          </p>
+        </div>
+        <div class="sponsor-btns">
+          <a class="btn btn-primary" href="https://afdian.com/a/gaibang" target="_blank" rel="noopener">去爱发电赞助</a>
+          <a class="btn btn-ghost" href="https://fans.seedtut.xyz" target="_blank" rel="noopener">看看粉丝墙</a>
+        </div>
+      </div>
+    </section>
+
+    <SiteFooter />
+  </body>
+</html>
+
+<style>
+  /* ---------- 首屏 ---------- */
+  .hero { padding: 64px 0 0; }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 6.4vw, 68px);
+    font-weight: 900;
+    letter-spacing: -0.025em;
+  }
+  .hero-sub {
+    margin-top: 24px;
+    font-size: 17px;
+    color: var(--ink-2);
+    max-width: 620px;
+  }
+  .hero-sub strong { color: var(--ink); }
+  .hero-cta { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-spec {
+    margin-top: 26px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  .hero-spec a { color: var(--brand-600); border-bottom: 1px solid var(--brand-300); }
+  .hero-shot-wrap { margin-top: 56px; }
+  .hero-shot {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    background: var(--card);
+  }
+  .hero-shot figcaption {
+    padding: 12px 18px;
+    font-size: 13px;
+    color: var(--ink-3);
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---------- 它替你做什么：名词行 ---------- */
+  .works { padding-top: 104px; }
+  .sec-head { margin-bottom: 36px; }
+  .sec-head h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; }
+  .sec-sub { margin-top: 10px; color: var(--ink-2); font-size: 15px; max-width: 560px; }
+  .work-list { border-top: 1px solid var(--line); }
+  .work-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .work-row dt { font-weight: 800; font-size: 16px; }
+  .work-row dd { color: var(--ink-2); font-size: 15px; max-width: 680px; }
+
+  /* ---------- 流程：裸列 ---------- */
+  .flow-sec { padding-top: 104px; }
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 28px;
+    counter-reset: step;
+  }
+  .flow-item { border-top: 2px solid var(--ink); padding-top: 14px; }
+  .flow-no {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--brand-500);
+    font-weight: 700;
+  }
+  .flow-item h3 { font-size: 17px; font-weight: 800; margin-top: 6px; }
+  .flow-item p { margin-top: 8px; font-size: 13.5px; color: var(--ink-2); line-height: 1.65; }
+
+  /* ---------- 界面 ---------- */
+  .shots-sec { padding-top: 104px; }
+  .shots-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .shot-frame {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    background: var(--card);
+    box-shadow: var(--shadow-card);
+  }
+  .shot-bar {
+    display: block;
+    padding: 8px 12px;
+    background: var(--brand-50);
+    border-bottom: 1px solid var(--line);
+  }
+  .shot-bar i {
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-3);
+  }
+  .shot-frame img { aspect-ratio: 1220 / 820; object-fit: cover; object-position: top; }
+  .shot figcaption { display: flex; gap: 10px; align-items: baseline; margin-top: 10px; }
+  .shot figcaption b { font-size: 15px; }
+  .shot figcaption span { font-size: 13px; color: var(--ink-3); }
+
+  /* ---------- 安全红线（深色） ---------- */
+  .redline {
+    margin-top: 104px;
+    background: var(--ink);
+    color: #f6efe9;
+    padding: 88px 0;
+  }
+  .redline .sec-head h2 { color: #fff; }
+  .redline .sec-sub { color: #c9bcb2; }
+  .red-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 40px;
+  }
+  .red-card { border-top: 2px solid var(--brand-500); padding-top: 16px; }
+  .red-card h3 { font-size: 17px; font-weight: 800; }
+  .red-card p { margin-top: 8px; font-size: 14.5px; color: #d8ccc2; max-width: 460px; }
+  .red-note {
+    margin-top: 44px;
+    font-size: 13.5px;
+    color: #a8988c;
+    max-width: 720px;
+  }
+  .red-note code {
+    background: rgba(255, 228, 211, 0.12);
+    border-color: rgba(255, 228, 211, 0.2);
+    color: var(--brand-300);
+  }
+
+  /* ---------- 下载 ---------- */
+  .dl-sec { padding-top: 104px; }
+  .dl-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+  .spec { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line); }
+  .spec th, .spec td {
+    text-align: left;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14.5px;
+    vertical-align: baseline;
+  }
+  .spec th {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--ink-3);
+    width: 88px;
+    letter-spacing: 0.08em;
+  }
+  .spec td a { color: var(--brand-600); }
+  .spec td a:hover { text-decoration: underline; }
+  .spec-dim { color: var(--ink-3); font-size: 13px; }
+  .dl-side { display: grid; gap: 14px; justify-items: start; }
+  .dl-btn { flex-direction: column; align-items: flex-start; gap: 2px; padding: 14px 24px; }
+  .dl-btn small { font-size: 12px; font-weight: 500; opacity: 0.8; }
+  .dl-notes { margin-top: 12px; display: grid; gap: 8px; }
+  .dl-notes li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13.5px;
+    color: var(--ink-3);
+  }
+  .dl-notes li::before {
+    content: "·";
+    position: absolute;
+    left: 2px;
+    color: var(--brand-400);
+    font-weight: 900;
+  }
+
+  /* ---------- 赞助 ---------- */
+  .sponsor { margin-top: 104px; border-top: 1px solid var(--line); padding-top: 64px; }
+  .sponsor-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sponsor h2 { font-size: clamp(24px, 3vw, 30px); font-weight: 800; }
+  .sponsor p { margin-top: 10px; color: var(--ink-2); font-size: 15px; max-width: 520px; }
+  .sponsor-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 1020px) {
+    .flow { grid-template-columns: repeat(2, 1fr); }
+    .shots-row { grid-template-columns: 1fr; max-width: 620px; }
+    .dl-grid { grid-template-columns: 1fr; gap: 36px; }
+  }
+  @media (max-width: 720px) {
+    .work-row { grid-template-columns: 1fr; gap: 6px; padding: 16px 0; }
+    .flow { grid-template-columns: 1fr; gap: 20px; }
+    .red-grid { grid-template-columns: 1fr; }
+    .hero { padding-top: 44px; }
+  }
+</style>

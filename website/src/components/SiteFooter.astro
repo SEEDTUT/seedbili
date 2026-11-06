@@ -1,0 +1,81 @@
+---
+const version = "1.4.1";
+const year = new Date().getFullYear();
+---
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col foot-about">
+        <div class="foot-brand">
+          <img src="/seedbili-icon.png" alt="" width="26" height="26" />
+          <b>seedbili</b>
+        </div>
+        <p>
+          B 站评论区自动回复 Agent，抓自己投稿的评论，替你盯梢、起草、留底。
+          以 MIT 协议开源，工具不碰密码、不代登录。
+        </p>
+      </div>
+      <div class="foot-col">
+        <h4>seedbili</h4>
+        <a href="/#download">下载 v{version}</a>
+        <a href="/blog/">更新日志</a>
+        <a href="https://github.com/seedtut/seedbili" target="_blank" rel="noopener">源码（GitHub）</a>
+      </div>
+      <div class="foot-col">
+        <h4>SEEDTUT</h4>
+        <a href="https://seedtut.xyz" target="_blank" rel="noopener">主站</a>
+        <a href="https://works.seedtut.xyz/" target="_blank" rel="noopener">作品集</a>
+        <a href="https://fans.seedtut.xyz" target="_blank" rel="noopener">粉丝墙</a>
+        <a href="https://afdian.com/a/gaibang" target="_blank" rel="noopener">爱发电</a>
+      </div>
+      <div class="foot-col">
+        <h4>找我</h4>
+        <a href="https://space.bilibili.com/3537105038871351" target="_blank" rel="noopener">B 站 @羁绊嵌合体</a>
+        <a href="https://x.com/SEEDTUT25" target="_blank" rel="noopener">X @SEEDTUT25</a>
+        <a href="https://t.me/seedtut" target="_blank" rel="noopener">Telegram</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© {year} 丐帮工作室 · SEEDTUT LAB</span>
+      <span>仅供管理自己投稿的评论区，请遵守 B 站社区规则。</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot { border-top: 1px solid var(--line); margin-top: 96px; }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 36px;
+    padding: 48px 0 36px;
+  }
+  .foot-brand { display: flex; align-items: center; gap: 8px; font-size: 15.5px; }
+  .foot-brand img { border-radius: 7px; }
+  .foot-about p { margin-top: 12px; font-size: 13.5px; color: var(--ink-3); max-width: 320px; }
+  .foot-col h4 {
+    font-size: 12.5px;
+    font-family: var(--mono);
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .foot-col a { display: block; font-size: 14px; color: var(--ink-2); padding: 4px 0; }
+  .foot-col a:hover { color: var(--brand-600); }
+  .foot-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    justify-content: space-between;
+    border-top: 1px solid var(--line);
+    padding: 20px 0 32px;
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+  @media (max-width: 860px) {
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .foot-about { grid-column: 1 / -1; }
+  }
+</style>

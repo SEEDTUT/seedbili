@@ -1,0 +1,48 @@
+---
+const version = "1.4.1";
+---
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">
+      <img src="/seedbili-icon.png" alt="seedbili 图标" width="30" height="30" />
+      <b>seedbili</b>
+    </a>
+    <nav class="nav-links">
+      <a href="/#works">它做什么</a>
+      <a href="/#shots">界面</a>
+      <a href="/blog/">日志</a>
+      <a href="https://afdian.com/a/gaibang" target="_blank" rel="noopener">赞助</a>
+      <a href="https://seedtut.xyz" target="_blank" rel="noopener">主站 ↗</a>
+      <a class="nav-cta" href="/#download">下载 v{version}</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 9px; font-size: 16.5px; }
+  .brand img { border-radius: 8px; }
+  .nav-links { display: flex; align-items: center; gap: 24px; font-size: 14px; color: var(--ink-2); }
+  .nav-links a:not(.nav-cta):hover { color: var(--brand-600); }
+  .nav-cta {
+    background: var(--brand-600);
+    color: #fff;
+    font-weight: 700;
+    padding: 7px 16px;
+    border-radius: 8px;
+  }
+  .nav-cta:hover { background: var(--brand-500); }
+  @media (max-width: 720px) {
+    .nav-links a:not(.nav-cta) { display: none; }
+  }
+</style>

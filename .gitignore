@@ -1,0 +1,20 @@
+# 构建产物
+app/build/
+.gradle/
+website/dist/
+website/node_modules/
+website/.astro/
+
+# 密钥与环境（真实凭据只活在 %APPDATA%\ReplyAgent\）
+.env*
+*.sec
+
+# Vercel
+.vercel/
+
+# 日志
+*.log
+
+# 本机杂物
+NVIDIA Corporation/
+文档（）暂时/

@@ -1,0 +1,88 @@
+/* seedbili 官网全局 —— 白底编辑风，橙色只给动作和关键词 */
+
+:root {
+  --brand-600: #d84a14;
+  --brand-500: #f26522;
+  --brand-400: #ff7d3d;
+  --brand-300: #ffa86a;
+  --brand-100: #ffe4d3;
+  --brand-50: #fff3ea;
+
+  --paper: #fffdfb;
+  --ink: #201812;
+  --ink-2: #5c5049;
+  --ink-3: #93837a;
+  --line: #eee0d4;
+  --card: #ffffff;
+
+  --radius-l: 16px;
+  --radius-m: 10px;
+  --radius-s: 6px;
+
+  --shadow-card: 0 1px 2px rgba(64, 34, 12, 0.05), 0 12px 32px -16px rgba(64, 34, 12, 0.16);
+
+  --mono: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+body {
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.7;
+  font-feature-settings: "tnum";
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+h1, h2, h3 { line-height: 1.25; letter-spacing: -0.015em; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* ---------- 通用按钮：直角、实色、不飘 ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius-m);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.btn:focus-visible, a:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; }
+.btn-primary { background: var(--brand-600); color: #fff; }
+.btn-primary:hover { background: var(--brand-500); }
+.btn-ghost { border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--brand-300); color: var(--brand-600); }
+
+/* ---------- 通用小件 ---------- */
+code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: var(--brand-50);
+  border: 1px solid var(--brand-100);
+  border-radius: 5px;
+  padding: 1px 6px;
+  color: var(--brand-600);
+  white-space: nowrap;
+}

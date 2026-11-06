@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+  <Bundle Name="@NAME@" Version="@VERSION@" Manufacturer="@VENDOR@"
+          UpgradeCode="@UPGRADE_CODE@"
+          IconSourceFile="app.ico"
+          HelpUrl="https://github.com/seedtut/seedbili">
+    <!-- WiX3 的 burn 靠 Bundle 的 UpgradeCode 自动识别已装旧壳并先卸载，无需 MajorUpgrade -->
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication
+          LicenseFile="license.rtf"
+          LogoFile="logo.png"
+          SuppressOptionsUI="yes" />
+    </BootstrapperApplicationRef>
+    <Chain>
+      <MsiPackage SourceFile="@MSI_PATH@" Vital="yes" />
+    </Chain>
+  </Bundle>
+</Wix>

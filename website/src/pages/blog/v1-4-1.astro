@@ -1,0 +1,115 @@
+---
+import "../../styles/global.css";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+
+const version = "1.4.1";
+const releaseBase = `https://github.com/seedtut/seedbili/releases/download/v${version}`;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>seedbili v1.4.1：安装包修好了，收件箱能直接回了 — 更新日志</title>
+    <meta
+      name="description"
+      content="v1.4.1 修好了 EXE 报错与 MSI「修复」显示（根因是 jpackage 的固定 ProductCode），EXE 换成自建 WiX Burn 引导，收件箱人工回复与最近投稿右键删除一并发布。"
+    />
+    <link rel="icon" type="image/png" href="/seedbili-icon.png" />
+  </head>
+  <body>
+    <SiteHeader />
+    <main class="wrap article">
+      <a class="back" href="/blog/">← 更新日志</a>
+      <header class="art-head">
+        <span class="post-meta">2026-11-01 · v1.4.1 · Windows</span>
+        <h1>安装包修好了，收件箱能直接回了</h1>
+      </header>
+
+      <div class="prose">
+        <p class="lede">
+          这个版本主要在还债：修安装包。如果你之前被
+          「EXE 双击报错」「MSI 装完在『应用和功能』里显示成『修复』」劝退过，
+          这两个都是 jpackage 的锅，这版彻底解决了。
+        </p>
+
+        <h2>MSI 为什么显示「修复」</h2>
+        <p>
+          jpackage 生成的 ProductCode 是按包名和版本号算出来的<strong>固定值</strong>。
+          同一个 1.4.0 的 MSI，无论重新构建多少次，ProductCode 都一样——Windows 看到一模一样的产品码，
+          就不认为这是「重新安装」，于是装完在系统里显示成待「修复」的状态，升级时还会撞 1638 错误。
+        </p>
+        <p>
+          现在 1.4.1 起，每次构建完都会把 ProductCode 换成随机 GUID，
+          并给 MSI 的升级判定表补上 <code>VersionMaxInclusive</code> 属性：
+          新版本安装包会先把旧版本干净卸载再安装，你的配置、密钥、台账全程不动。
+        </p>
+
+        <h2>EXE 不再是壳</h2>
+        <p>
+          之前 jpackage 顺手生成的 EXE 引导器其实是个不带卸载逻辑的壳，双击还可能报错。
+          现在换成自己用 WiX 编的 Burn 引导包：中文安装向导、MIT 协议页、
+          支持 <code>msiexec /i seedbili-1.4.1.msi /qn /norestart</code> 这种静默部署，
+          装完自动出现在开始菜单。
+        </p>
+
+        <h2>顺带的新东西</h2>
+        <ul>
+          <li>
+            <strong>收件箱直接回复</strong>：模型没把握的评论转人工收件箱后，
+            在输入框里改几个字、点「按这段发送」，就以你自己的登录态回出去；发送失败的条目留在箱里，随时再试。
+          </li>
+          <li>
+            <strong>最近投稿右键删除</strong>：记错的 BV 号，在「目标投稿」下面右键 →「从记录里删掉」，不用再翻配置文件。
+          </li>
+        </ul>
+
+        <h2>下载</h2>
+        <div class="art-dl">
+          <a class="btn btn-primary" href={`${releaseBase}/seedbili-${version}.exe`}>下载安装器（.exe）</a>
+          <a class="btn btn-ghost" href={`${releaseBase}/seedbili-${version}.msi`}>下载 MSI</a>
+        </div>
+        <p class="art-note">
+          直接装新包即可升级，旧版本自动卸载。数据都在 <code>%APPDATA%\ReplyAgent\</code>，安装与卸载都不会碰它。
+        </p>
+      </div>
+    </main>
+    <SiteFooter />
+  </body>
+</html>
+
+<style>
+  .article { padding-top: 48px; min-height: 60vh; max-width: 780px; }
+  .back { font-size: 13.5px; color: var(--ink-3); }
+  .back:hover { color: var(--brand-600); }
+  .art-head { margin-top: 22px; }
+  .post-meta { font-family: var(--mono); font-size: 13px; color: var(--ink-3); }
+  .art-head h1 {
+    margin-top: 10px;
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+  .prose { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 28px; }
+  .lede { color: var(--ink) !important; font-size: 16.5px; }
+  .prose p { margin: 14px 0; color: var(--ink-2); font-size: 15.5px; }
+  .prose strong { color: var(--ink); }
+  .prose h2 { font-size: 21px; font-weight: 800; margin-top: 36px; }
+  .prose ul { margin: 14px 0; display: grid; gap: 10px; }
+  .prose li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--ink-2);
+    font-size: 15.5px;
+  }
+  .prose li::before {
+    content: "·";
+    position: absolute;
+    left: 2px;
+    color: var(--brand-400);
+    font-weight: 900;
+  }
+  .art-dl { display: flex; gap: 12px; flex-wrap: wrap; margin: 22px 0; }
+  .art-note { font-size: 13.5px; color: var(--ink-3); }
+</style>

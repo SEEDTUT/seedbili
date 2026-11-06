@@ -1,0 +1,85 @@
+---
+import "../../styles/global.css";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+
+const posts = [
+  {
+    slug: "v1-4-1",
+    date: "2026-11-01",
+    tag: "v1.4.1",
+    title: "安装包修好了，收件箱能直接回了",
+    excerpt:
+      "EXE 双击报错、MSI 显示「修复」的根因是 jpackage 的固定 ProductCode；这版换成随机码 + 自建 Burn 引导，顺带把收件箱回复和最近投稿右键删除一起发了。",
+  },
+];
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>更新日志 — seedbili</title>
+    <meta name="description" content="seedbili 的版本发布与踩坑记录。" />
+    <link rel="icon" type="image/png" href="/seedbili-icon.png" />
+  </head>
+  <body>
+    <SiteHeader />
+    <main class="wrap blog">
+      <div class="blog-head">
+        <h1>新版本和踩坑记录</h1>
+        <p>每个版本改了什么、为什么这么改，都写在这里。</p>
+      </div>
+      <ul class="post-list">
+        {
+          posts.map((p) => (
+            <li>
+              <a class="post-item" href={`/blog/${p.slug}/`}>
+                <span class="post-date">{p.date}</span>
+                <span class="post-tag">{p.tag}</span>
+                <div>
+                  <b>{p.title}</b>
+                  <p>{p.excerpt}</p>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </main>
+    <SiteFooter />
+  </body>
+</html>
+
+<style>
+  .blog { padding-top: 56px; min-height: 60vh; }
+  .blog-head h1 { font-size: clamp(28px, 4vw, 38px); font-weight: 900; margin-top: 8px; }
+  .blog-head p { margin-top: 8px; color: var(--ink-2); }
+  .post-list { margin-top: 40px; border-top: 1px solid var(--line); }
+  .post-item {
+    display: grid;
+    grid-template-columns: 110px 84px 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .post-item:hover b { color: var(--brand-600); }
+  .post-date { font-family: var(--mono); font-size: 13px; color: var(--ink-3); }
+  .post-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand-600);
+    background: var(--brand-50);
+    border: 1px solid var(--brand-100);
+    border-radius: 5px;
+    padding: 1px 8px;
+    justify-self: start;
+  }
+  .post-item b { font-size: 16.5px; }
+  .post-item p { margin-top: 6px; font-size: 14px; color: var(--ink-2); max-width: 640px; }
+  @media (max-width: 720px) {
+    .post-item { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
